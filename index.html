@@ -1,0 +1,88 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VitalGuard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <img src="raw.webp" alt="VitalGuard Logo" />
+      <span>VitalGuard</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#alerts">Alerts</a></li>
+      <li><a href="#emergency">Emergency</a></li>
+      <li><a href="#insights">Insights</a></li>
+      <li><a href="#settings">Settings</a></li>
+    </ul>
+    <a href="#signup" class="signup-btn">Sign Up</a>
+  </nav>
+  <div class="dashboard-container">
+    <!-- Header Section -->
+    <header>
+        <div class="user-profile">
+            <img src="profile-pic.jpg" alt="Profile Picture" class="profile-img">
+            <h1>Good Morning, Diya!</h1>
+            <p>Your health score: <span class="health-score">85/100</span></p>
+        </div>
+        <div class="notifications">
+            <span class="notifications-icon">🔔</span>
+        </div>
+    </header>
+
+    <!-- Vitals Overview Section -->
+    <section class="vitals-section">
+        <div class="vitals">
+            <div class="vital" id="heart-rate">
+                <h3>Heart Rate</h3>
+                <p class="value" id="heart-rate-value">72 bpm</p>
+                <div class="progress-bar" id="heart-rate-bar"></div>
+            </div>
+            <div class="vital" id="blood-pressure">
+                <h3>Blood Pressure</h3>
+                <p class="value" id="blood-pressure-value">120/80 mmHg</p>
+                <div class="progress-bar" id="blood-pressure-bar"></div>
+            </div>
+            <div class="vital" id="oxygen-level">
+                <h3>Oxygen Levels</h3>
+                <p class="value" id="oxygen-level-value">98%</p>
+                <div class="progress-bar" id="oxygen-level-bar"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Activity & Fitness Tracker -->
+    <section class="activity-section">
+        <div class="activity">
+            <h3>Steps Today</h3>
+            <p class="value" id="steps-count">8,000 steps</p>
+            <div class="progress-bar" id="steps-bar"></div>
+        </div>
+        <div class="activity">
+            <h3>Calories Burned</h3>
+            <p class="value" id="calories-count">350 kcal</p>
+            <div class="progress-bar" id="calories-bar"></div>
+        </div>
+    </section>
+
+    <!-- Alerts Section -->
+    <section class="alerts-section" id="alerts">
+        <!-- Alerts will be added dynamically here -->
+    </section>
+
+    <!-- Emergency Readiness -->
+    <section class="emergency-section">
+        <button class="emergency-btn" id="call-emergency-btn">Call Emergency</button>
+        <button class="emergency-btn" id="shake-detection-btn">Activate Shake Detection</button>
+    </section>
+
+</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
