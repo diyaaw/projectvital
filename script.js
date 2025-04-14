@@ -1,63 +1,98 @@
-// Update the vitals data dynamically
-function updateVitals() {
-    const heartRate = Math.floor(Math.random() * (100 - 60 + 1)) + 60;
-    const bloodPressure = `${Math.floor(Math.random() * (130 - 100 + 1)) + 100}/${Math.floor(Math.random() * (90 - 60 + 1)) + 60}`;
-    const oxygenLevel = Math.floor(Math.random() * (100 - 90 + 1)) + 90;
-
-    // Update the heart rate
-    document.getElementById("heart-rate-value").textContent = `${heartRate} bpm`;
-    document.getElementById("heart-rate-bar").style.width = `${(heartRate - 60) / 40 * 100}%`;
-
-    // Update the blood pressure
-    document.getElementById("blood-pressure-value").textContent = bloodPressure;
-    document.getElementById("blood-pressure-bar").style.width = `${(parseInt(bloodPressure.split("/")[0]) - 100) / 30 * 100}%`;
-
-    // Update the oxygen level
-    document.getElementById("oxygen-level-value").textContent = `${oxygenLevel}%`;
-    document.getElementById("oxygen-level-bar").style.width = `${oxygenLevel - 90}%`;
-}
-
-// Update the activity stats dynamically
-function updateActivity() {
-    const steps = Math.floor(Math.random() * (10000 - 7000 + 1)) + 7000;
-    const calories = Math.floor(Math.random() * (500 - 300 + 1)) + 300;
-
-    // Update steps
-    document.getElementById("steps-count").textContent = `${steps} steps`;
-    document.getElementById("steps-bar").style.width = `${(steps - 7000) / 3000 * 100}%`;
-
-    // Update calories burned
-    document.getElementById("calories-count").textContent = `${calories} kcal`;
-    document.getElementById("calories-bar").style.width = `${(calories - 300) / 200 * 100}%`;
-}
-
-// Add dynamic alerts
-function showAlert(message, type) {
-    const alertsSection = document.getElementById("alerts");
-    const alertDiv = document.createElement("div");
-    alertDiv.classList.add("alert");
-    alertDiv.classList.add(type === "warning" ? "alert-warning" : "alert-danger");
-    alertDiv.innerHTML = `<span class="alert-title">${type === "warning" ? "Warning!" : "Critical!"}</span> ${message}`;
-    alertsSection.appendChild(alertDiv);
-}
-
-// Emergency button actions
-document.getElementById("call-emergency-btn").addEventListener("click", function () {
-    alert("Emergency services are being called!");
-    // Implement further actions like sending emergency signals, etc.
-});
-
-document.getElementById("shake-detection-btn").addEventListener("click", function () {
-    alert("Shake detection activated!");
-    // Implement shake detection activation here
-});
-
-// Initial setup and data load
-window.onload = function () {
-    updateVitals();
-    updateActivity();
-
-    // Simulate alerts
-    showAlert("High heart rate detected! Please take a rest.", "warning");
-    showAlert("Blood pressure is critical! Please check immediately.", "critical");
-};
+document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem("username") || "User";
+    const greetingEl = document.getElementById("greeting");
+    const hour = new Date().getHours();
+    let greeting = "Hello";
+  
+    if (hour >= 5 && hour < 12) greeting = "Good Morning";
+    else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
+    else if (hour >= 17 && hour < 21) greeting = "Good Evening";
+  
+    greetingEl.textContent = `${greeting}, ${username}!`;
+  
+    const data = JSON.parse(localStorage.getItem("vitalguard_data")) || {
+      vitals: {
+        heartRate: "72 bpm",
+        respiration: "16 breaths/min",
+        bloodPressure: "120/80 mmHg",
+        temperature: "98.6°F",
+        stressLevel: "Low"
+      },
+      activity: {
+        steps: "4320",
+        sleep: "6.5 hrs",
+        calories: "210 kcal"
+      },
+      lifestyle: {
+        meal: "12:30 PM",
+        hydration: "In 20 min",
+        stretch: "3:00 PM"
+      },
+      insights: [
+        "Heart rate improved by 5%",
+        "You moved more than yesterday!"
+      ],
+      history: {
+        medication: "10 April",
+        visit: "22 March"
+      },
+      checkups: {
+        nextAppointment: "18 April",
+        location: "Apollo Clinic, Indore"
+      }
+    };
+  
+    document.getElementById("heart-rate").textContent = data.vitals.heartRate;
+    document.getElementById("respiration").textContent = data.vitals.respiration;
+    document.getElementById("blood-pressure").textContent = data.vitals.bloodPressure;
+    document.getElementById("temperature").textContent = data.vitals.temperature;
+    document.getElementById("stress-level").textContent = data.vitals.stressLevel;
+  
+    document.getElementById("steps").textContent = data.activity.steps;
+    document.getElementById("sleep").textContent = data.activity.sleep;
+    document.getElementById("calories").textContent = data.activity.calories;
+  
+    document.getElementById("meal-time").textContent = data.lifestyle.meal;
+    document.getElementById("hydration").textContent = data.lifestyle.hydration;
+    document.getElementById("stretch-break").textContent = data.lifestyle.stretch;
+  
+    const insightsList = document.getElementById("insights-list");
+    insightsList.innerHTML = "";
+    data.insights.forEach(insight => {
+      const li = document.createElement("li");
+      li.textContent = insight;
+      insightsList.appendChild(li);
+    });
+  
+    document.getElementById("last-medication").textContent = data.history.medication;
+    document.getElementById("last-visit").textContent = data.history.visit;
+  
+    document.getElementById("next-appointment").textContent = data.checkups.nextAppointment;
+    document.getElementById("appointment-location").textContent = data.checkups.location;
+  
+    document.getElementById("sos-button").addEventListener("click", () => {
+      alert("SOS Activated! Emergency services have been notified.");
+      document.getElementById("sos-button").classList.add("active");
+    });
+  
+    // Date Picker Event
+    document.getElementById("date-picker").addEventListener("change", (e) => {
+      const selectedDate = e.target.value;
+      console.log("Selected date:", selectedDate);
+      // Future integration: Fetch backend data based on selected date
+    });
+  
+    // Refresh Button Event
+    document.getElementById("refresh-btn").addEventListener("click", () => {
+      console.log("Refreshing data...");
+      // Future integration: Refresh data from backend
+    });
+  });
+  function toggleCheckups() {
+    var moreCheckups = document.getElementById('more-checkups');
+    if (moreCheckups.style.display === 'none') {
+      moreCheckups.style.display = 'block';
+    } else {
+      moreCheckups.style.display = 'none';
+    }
+  }  
