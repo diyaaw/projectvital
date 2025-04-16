@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lifestyle AI – Mood Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #007C91, #38B6FF, #A3E635, #FAFAFA);
+      background-size: 400% 400%;
+      animation: moveBg 12s ease infinite;
+      font-family: 'Poppins', sans-serif;
+      color: #2C2C2C;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    @keyframes moveBg {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .modern-heading {
+      font-size: 2.4rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 30px;
+      background: linear-gradient(to right, #4CAF50, #81C784);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeInSlideUp 1s ease-out 0.3s forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    @keyframes fadeInSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card, .healthforecast-card, .longterm-card, .planner-card {
+      background-color: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 30px;
+      text-align: center;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover, .healthforecast-card:hover, .longterm-card:hover, .planner-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .greeting, .healthforecast-header, .longterm-header {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #007C91;
+      margin-bottom: 0.5rem;
+    }
+
+    .question, .healthforecast-info, .longterm-info {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .emojis, .healthforecast-emoji-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 1.5rem;
+    }
+
+    .emoji, .healthforecast-emoji {
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+
+    .emoji:hover, .healthforecast-emoji:hover {
+      transform: scale(1.2);
+      background-color: rgba(0, 124, 145, 0.1);
+    }
+
+    .selected {
+      background-color: #A3E635;
+    }
+
+    .log, .healthforecast-log, .longterm-log {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #007C91;
+    }
+
+    .longterm-goals {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .longterm-goal {
+      background-color: #F0F4F8;
+      padding: 15px;
+      border-radius: 1rem;
+    }
+
+    .longterm-goal-name {
+      font-weight: bold;
+      color: #007C91;
+    }
+
+    .longterm-goal-status {
+      color: #A3E635;
+    }
+
+    .planner-card {
+      background: linear-gradient(135deg, #f0f4ff, #d9e4ff);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .planner-header {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #3a3a3a;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .chat-window {
+      background-color: #ffffff;
+      border-radius: 15px;
+      padding: 15px;
+      height: 300px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+    }
+
+    .chat-message {
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .chat-message.bot {
+      text-align: left;
+      color: #555;
+    }
+
+    .chat-message.user {
+      text-align: right;
+      color: #007C91;
+    }
+
+    .chat-input-area {
+      display: flex;
+      margin-top: 15px;
+    }
+
+    #chat-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    #send-btn {
+      padding: 10px 15px;
+      margin-left: 10px;
+      background-color: #007C91;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #send-btn:hover {
+      background-color: #005f6b;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1 class="modern-heading">Welcome to Your Daily Space, Diya!</h1>
+
+  <div class="card">
+    <div class="greeting" id="greeting">Hello!</div>
+    <div class="question">How are you feeling right now?</div>
+    <div class="emojis" id="emojiContainer">
+      <div class="emoji" data-mood="Happy 😊">😊</div>
+      <div class="emoji" data-mood="Calm 😌">😌</div>
+      <div class="emoji" data-mood="Energetic ⚡">⚡</div>
+      <div class="emoji" data-mood="Sad 😢">😢</div>
+      <div class="emoji" data-mood="Anxious 😰">😰</div>
+      <div class="emoji" data-mood="Angry 😡">😡</div>
+    </div>
+    <div class="log" id="logMsg"></div>
+  </div>
+
+  <div class="healthforecast-card">
+    <div class="healthforecast-header">Health Forecast for Today</div>
+    <div class="healthforecast-info" id="healthforecast-info">
+      Stay hydrated and get enough rest. Here's your health forecast:
+    </div>
+    <div class="healthforecast-emoji-container" id="healthforecast-emoji-container">
+      <div class="healthforecast-emoji" data-forecast="Hydration 💧">💧</div>
+      <div class="healthforecast-emoji" data-forecast="Sleep 😴">😴</div>
+      <div class="healthforecast-emoji" data-forecast="Exercise 🏋️">🏋️</div>
+      <div class="healthforecast-emoji" data-forecast="Diet 🥗">🥗</div>
+    </div>
+    <div class="healthforecast-log" id="healthforecast-log-msg"></div>
+  </div>
+
+  <div class="longterm-card">
+    <div class="longterm-header">Long-term Health Goals</div>
+    <div class="longterm-info">Track your long-term health progress and stay motivated!</div>
+    <div class="longterm-goals">
+      <div class="longterm-goal">
+        <div class="longterm-goal-name">Healthy Weight</div>
+        <div class="longterm-goal-status">Goal: 65kg</div>
+      </div>
+      <div class="longterm-goal">
+        <div class="longterm-goal-name">Daily Steps</div>
+        <div class="longterm-goal-status">Goal: 10,000 steps</div>
+      </div>
+      <div class="longterm-goal">
+        <div class="longterm-goal-name">Healthy Heart Rate</div>
+        <div class="longterm-goal-status">Goal: 70 bpm</div>
+      </div>
+    </div>
+    <div class="longterm-log" id="longterm-log-msg"></div>
+  </div>
+
+  <div class="planner-card">
+    <div class="planner-header">Plan Your Day</div>
+    <div class="chat-window" id="chatWindow"></div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="Type your message here..." />
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Code to handle user input, emoji selection, and chat interactions
+    const emojiContainer = document.getElementById('emojiContainer');
+    const logMsg = document.getElementById('logMsg');
+
+    emojiContainer.addEventListener('click', function(event) {
+      if (event.target.classList.contains('emoji')) {
+        const selectedMood = event.target.getAttribute('data-mood');
+        logMsg.textContent = `You are feeling ${selectedMood}. Keep it up!`;
+        event.target.classList.toggle('selected');
+      }
+    });
+
+    const healthforecastEmojiContainer = document.getElementById('healthforecast-emoji-container');
+    const healthforecastLogMsg = document.getElementById('healthforecast-log-msg');
+
+    healthforecastEmojiContainer.addEventListener('click', function(event) {
+      if (event.target.classList.contains('healthforecast-emoji')) {
+        const selectedForecast = event.target.getAttribute('data-forecast');
+        healthforecastLogMsg.textContent = `Your health forecast: ${selectedForecast}`;
+        event.target.classList.toggle('selected');
+      }
+    });
+
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const chatWindow = document.getElementById('chatWindow');
+
+    sendBtn.addEventListener('click', () => {
+      const userMessage = chatInput.value;
+      if (userMessage) {
+        chatWindow.innerHTML += `<div class="chat-message user">${userMessage}</div>`;
+        chatInput.value = '';
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        setTimeout(() => {
+          chatWindow.innerHTML += `<div class="chat-message bot">I'm here to help!</div>`;
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+        }, 1000);
+      }
+    });
+  </script>
+
+</body>
+</html>
