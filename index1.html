@@ -1,0 +1,440 @@
+
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VitalGuard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Inline CSS for the page -->
+  <style>
+    :root {
+      --primary: #007C91;
+      --secondary: #38B6FF;
+      --accent: #A3E635;
+      --alert: #FF5C5C;
+      --bg: #FAFAFA;
+      --text: #2C2C2C;
+      --card-bg: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo img {
+      height: 50px;
+      width: 50px;
+    }
+
+    .logo span {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 3rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .login-btn {
+      padding: 0.5rem 1rem;
+      margin-left: rem;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background-color: var(--secondary);
+    }
+
+    .signup-btn {
+      padding: 0.5rem 1rem;
+      margin-right: 5rem;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+    }
+
+    .signup-btn:hover {
+      background-color: var(--secondary);
+    }
+
+    .container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .greeting h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+
+    .greeting p {
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .dashboard-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+
+    .dashboard-controls input {
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .dashboard-controls button {
+      background-color: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+      border: 2px solid #ccc;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      border-color: var(--primary);
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .card ul {
+      list-style: none;
+      padding: 0;
+      line-height: 1.8;
+    }
+
+    .card li span {
+      font-weight: 600;
+    }
+
+    .low {
+      color: var(--accent);
+    }
+
+    .checkup-card {
+      background-color: var(--card-bg);
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 1.5rem;
+    }
+
+    .checkup-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .checkup-header h3 {
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+
+    .checkup-details p {
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .view-details-btn {
+      background-color: var(--secondary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    .view-details-btn:hover {
+      background-color: var(--primary);
+    }
+
+    /* Charts */
+    canvas {
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation bar -->
+  <nav class="navbar">
+    <div class="logo">
+      <img src="{% static 'vitalguard/images/raw.webp' %}" alt="VitalGuard Logo" />
+      <span>VitalGuard</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="lifestyleAI.html">Lifestyle AI</a></li>
+      <li><a href="emergency.html">Emergency</a></li>
+      <li><a href="#insights">Insights</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="auth-buttons">
+      <a href="login.html" class="login-btn">Login</a>
+      <a href="signup.html" class="signup-btn">Sign Up</a>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="container">
+    <!-- Greeting Section -->
+    <section class="greeting">
+      <h1 id="greeting">Loading greeting...</h1>
+      <p>Here's your health snapshot for today 🩺</p>
+    </section>
+
+    <!-- Dashboard Controls -->
+    <section class="dashboard-controls">
+      <input type="date" id="date-picker" />
+      <button id="refresh-btn" title="Refresh Data"><i class="bi bi-arrow-clockwise"></i></button>
+    </section>
+
+    <!-- Dashboard Information Cards -->
+    <section class="dashboard-grid">
+      <div class="card vitals">
+        <h2>Vitals</h2>
+        <ul>
+          <li>❤️ Heart Rate: <span id="heart-rate">-- bpm</span></li>
+          <li>💨 Respiration: <span id="respiration">-- breaths/min</span></li>
+          <li>🩸 Blood Pressure: <span id="blood-pressure">--/-- mmHg</span></li>
+          <li>🌡️ Body Temp: <span id="temperature">-- °F</span></li>
+          <li>🧠 Stress Level: <span id="stress-level" class="low">--</span></li>
+        </ul>
+      </div>
+      <div class="card activity">
+        <h2>Activity</h2>
+        <ul>
+          <li>👟 Steps: <span id="steps">--</span></li>
+          <li>🛌 Sleep: <span id="sleep">-- hrs</span></li>
+          <li>🔥 Calories Burned: <span id="calories">-- kcal</span></li>
+        </ul>
+      </div>
+      <div class="card lifestyle">
+        <h2>Plan Your Lifestyle</h2>
+        <ul>
+          <li>🥗 Meal: <span id="meal-time">--</span></li>
+          <li>💧 Hydration Reminder: <span id="hydration">--</span></li>
+          <li>🧘 Stretch Break: <span id="stretch-break">--</span></li>
+        </ul>
+      </div>
+
+      <div class="card insights">
+        <h2>Insights</h2>
+        <ul id="insights-list">
+          <li>Loading insights...</li>
+        </ul>
+      </div>
+      <div class="card medical-history">
+        <h2>Medical History</h2>
+        <ul>
+          <li>💊 Last Medication: <span id="last-medication">--</span></li>
+          <li>🩺 Last Doctor Visit: <span id="last-visit">--</span></li>
+        </ul>
+      </div>
+      <div class="card upcoming-checkups">
+        <h2>Upcoming Checkups</h2>
+        <div class="checkup-card">
+          <div class="checkup-header">
+            <h3>18 April</h3>
+            <p>📍 Location: Apollo Clinic, Indore</p>
+          </div>
+          <div class="checkup-details">
+            <p><strong>Doctor:</strong> Dr. Sharma</p>
+            <p><strong>Time:</strong> 10:30 AM</p>
+            <a href="checkup-details-page.html" class="view-details-btn">View More</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Insights Section -->
+  <section id="insights" style="margin: 2rem;">
+    <h2>Health Insights</h2>
+
+    <!-- Line Chart -->
+    <div style="max-width: 600px;">
+      <canvas id="heartRateChart"></canvas>
+    </div>
+
+    <!-- Bar Chart -->
+    <div style="max-width: 600px; margin-top: 2rem;">
+      <canvas id="sleepBarChart"></canvas>
+    </div>
+
+    <!-- Pie Chart -->
+    <div style="max-width: 400px; margin-top: 2rem;">
+      <canvas id="activityPieChart"></canvas>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-card" style="margin-top: 2rem;">
+      <h3>Weekly Summary</h3>
+      <p>Average Heart Rate: <span id="avgHeartRate">75 bpm</span></p>
+      <p>Average Sleep: <span id="avgSleep">6.2 hrs</span></p>
+      <p>Stress Trend: <span id="stressTrend">Stable</span></p>
+    </div>
+  </section>
+
+  <!-- Chart.js Script -->
+  <script>
+    const ctx = document.getElementById('heartRateChart').getContext('2d');
+    const heartRateChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Heart Rate (bpm)',
+          data: [74, 76, 72, 78, 75, 73, 74],
+          borderColor: 'blue',
+          backgroundColor: 'lightblue',
+          fill: false,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false
+          }
+        }
+      }
+    });
+
+    const sleepCtx = document.getElementById('sleepBarChart').getContext('2d');
+    const sleepBarChart = new Chart(sleepCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Sleep (hrs)',
+          data: [6.5, 7, 5.8, 6.2, 7.5, 8, 6.9],
+          backgroundColor: 'purple'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    const pieCtx = document.getElementById('activityPieChart').getContext('2d');
+    const activityPieChart = new Chart(pieCtx, {
+      type: 'pie',
+      data: {
+        labels: ['Walking', 'Running', 'Resting'],
+        datasets: [{
+          label: 'Daily Activity',
+          data: [50, 20, 30],
+          backgroundColor: ['#4CAF50', '#FF9800', '#F44336']
+        }]
+      },
+      options: {
+        responsive: true
+      }
+    });
+  </script>
+</body>
+</html>
